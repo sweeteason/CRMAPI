@@ -1,0 +1,91 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CRMAPI.Core.Entity
+{
+    public class tek_repair
+    {
+        /// <summary>
+        /// 流水號
+        /// </summary>
+        public int id { get; set; }
+
+        /// <summary>
+        /// 維修狀態
+        /// </summary>
+        public string tek_repairstatus { get; set; }
+
+        /// <summary>
+        /// 客戶名稱
+        /// </summary>
+        public string tek_account { get; set; }
+
+        /// <summary>
+        /// 收件單號
+        /// </summary>
+        public string tek_workorder_tek_repair { get; set; }
+
+        /// <summary>
+        /// 維修單號
+        /// </summary>
+        public string tek_name { get; set; }
+
+        /// <summary>
+        /// 收件日期
+        /// </summary>
+        public string tek_recipient_date { get; set; }
+
+        /// <summary>
+        /// 服務方式
+        /// </summary>
+        public string tek_service { get; set; }
+
+        /// <summary>
+        /// 服務項目
+        /// </summary>
+        public string tek_service_item { get; set; }
+
+        /// <summary>
+        /// 產品名稱
+        /// </summary>
+        public string tek_product { get; set; }
+
+        /// <summary>
+        /// 序號
+        /// </summary>
+        public string tek_serial_no { get; set; }
+
+        /// <summary>
+        /// 保固狀態
+        /// </summary>
+        public string tek_warrenty { get; set; }
+
+        /// <summary>
+        /// 連絡人
+        /// </summary>
+        public string tek_contact { get; set; }
+
+        /// <summary>
+        /// 客戶電話
+        /// </summary>
+        public string tek_telephone { get; set; }
+
+        /// <summary>
+        /// 手機
+        /// </summary>
+        public string tek_mobile { get; set; }
+
+        /// <summary>
+        /// 客戶地址
+        /// </summary>
+        public string tek_clientadd { get; set; }
+
+        /// <summary>
+        /// GPS
+        /// </summary>
+        public string tek_GPS { get; set; }
+    }
+}
