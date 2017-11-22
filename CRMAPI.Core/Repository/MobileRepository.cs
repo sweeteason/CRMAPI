@@ -8,6 +8,7 @@ using System.Data;
 using CRMAPI.Core.Entity;
 using ADOTool;
 using ADOTool.CustomException;
+using System.DirectoryServices;
 
 namespace CRMAPI.Core.Repository
 {
@@ -122,5 +123,35 @@ namespace CRMAPI.Core.Repository
                 throw new DaoException(SQL, "依帳號取得維修單列表時發生錯誤", ex);
             }
         }
+
+        /// <summary>
+        /// 檢查會員登入
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
+        public bool CheckLogin(string account, string pwd)
+        {
+            bool flag = false;
+            try
+            {
+                string ldap_Path = "LDAP://apo.epson.net/DC=apo, DC=Epson, DC=net, OU=tek, OU=ett";
+                DirectoryEntry entry = new DirectoryEntry(ldap_Path, account, pwd, AuthenticationTypes.Secure);
+                DirectorySearcher searcher = new DirectorySearcher(entry);
+                searcher.SearchRoot = entry;
+                SearchResult result = searcher.FindOne();
+                if (result != null)
+                {
+                    flag = true;
+                }
+                return flag;
+            }
+            catch
+            {
+                //AD登入失敗
+                return false;
+            }
+        }
     }
+
 }
