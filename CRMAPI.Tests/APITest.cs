@@ -12,27 +12,28 @@ namespace CRMAPI.Tests
     [TestClass]
     public class APITest
     {
-        MobileTimeRepository mobileTimeRepository = new MobileTimeRepository("Data Source=crmdbv.database.windows.net;Initial Catalog=CRMDB;User=eason_yu;Pwd=Aa1111111;");
+        MobileRepository mobileRepository = new MobileRepository("Data Source=crmdbv.database.windows.net;Initial Catalog=CRMDB;User=eason_yu;Pwd=Aa1111111;");
 
         [TestMethod]
         public void GetMobileTimesTest()
         {
-            List<tek_mobiletime> mobiletime = mobileTimeRepository.GetMobileTimeList();
-            Assert.AreEqual(true, mobiletime.Count > 0);
+            QueryList query = new QueryList();
+            query.Page = 1;
+            query.PageSize = 10;
+            List<tek_repair> mobile = mobileRepository.GetRepairList(query);
+            Assert.AreEqual(true, mobile.Count > 0);
         }
 
         [TestMethod]
-        public void GetMobiletimeByNo()
+        public void GetRepairListByAccount()
         {
-            tek_mobiletime mobiletime = mobileTimeRepository.GetMobiletimeByNo("1234567890");
-            Assert.AreNotEqual(null, mobiletime);
+            QueryList query = new QueryList();
+            query.Page = 1;
+            query.PageSize = 10;
+            query.Keyword = "aaa";
+            List<tek_repair> mobile = mobileRepository.GetRepairListByAccount(query);
+            Assert.AreEqual(true, mobile.Count > 0);
         }
 
-        [TestMethod]
-        public void GetMobiletimeByStatus()
-        {
-            List<tek_mobiletime> mobiletime = mobileTimeRepository.GetMobiletimeByStatus("1");
-            Assert.AreEqual(true, mobiletime.Count > 0);
-        }
     }
 }
