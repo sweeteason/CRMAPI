@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace FCMPostPush.Models
+namespace CRMAPI.Models
 {
     public class FCMPushMessage
     {
