@@ -30,7 +30,7 @@ namespace CRMAPI.Core.Repository
             string SQL = @"
                 select top (@PageSize) * 
                 from (
-                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from tek_repair
+                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from Repair_Staging
                 ) a
                 where rownumber > @PageSize * (@Page - 1)
             ";
@@ -61,7 +61,7 @@ namespace CRMAPI.Core.Repository
             string SQL = @"
                 select top (@PageSize) * 
                 from (
-                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from tek_repair where tek_account = @account
+                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from Repair_Staging where tek_account = @account
                 ) a
                 where rownumber > @PageSize * (@Page - 1)
             ";
@@ -91,9 +91,9 @@ namespace CRMAPI.Core.Repository
         public bool UpdateMobileTime(string account, string status)
         {
             string SQL = @"
-                if exists (select * from tek_mobiletime where tek_repair_tek_mobiletime = @id)
+                if exists (select * from Mobiletime_Staging where tek_repair_tek_mobiletime = @id)
                    begin
-                       update tek_mobiletime set tek_m_status = @status,tek_flag = getdate() where tek_repair_tek_mobiletime = @id;
+                       update Mobiletime_Staging set tek_m_status = @status,tek_flag = getdate() where tek_repair_tek_mobiletime = @id;
 	                   select '1'
                    end
                 else
@@ -135,7 +135,7 @@ namespace CRMAPI.Core.Repository
             bool flag = false;
             try
             {
-                string ldap_Path = "LDAP://apo.epson.net/DC=apo, DC=Epson, DC=net, OU=tek, OU=ett";
+                string ldap_Path = "LDAP://apo.epson.net/OU=tek,OU=ett,DC=apo,DC=Epson,DC=net";
                 DirectoryEntry entry = new DirectoryEntry(ldap_Path, account, pwd, AuthenticationTypes.Secure);
                 DirectorySearcher searcher = new DirectorySearcher(entry);
                 searcher.SearchRoot = entry;
