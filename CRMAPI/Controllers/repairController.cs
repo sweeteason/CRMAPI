@@ -163,7 +163,7 @@ namespace CRMAPI.Controllers
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
-        public bool CheckLogin(string id, string status)
+        public string CheckLogin(string id, string status)
         {
             return mobileRepository.CheckLogin(id, status);
         }

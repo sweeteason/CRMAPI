@@ -130,26 +130,32 @@ namespace CRMAPI.Core.Repository
         /// <param name="account"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        public bool CheckLogin(string account, string pwd)
+        public string CheckLogin(string account, string pwd)
         {
-            bool flag = false;
+            string flag = "no user";
             try
             {
                 string ldap_Path = "LDAP://apo.epson.net/OU=tek,OU=ett,DC=apo,DC=Epson,DC=net";
                 DirectoryEntry entry = new DirectoryEntry(ldap_Path, account, pwd, AuthenticationTypes.Secure);
                 DirectorySearcher searcher = new DirectorySearcher(entry);
+                searcher.Filter = "(SAMAccountName=" + account + ")";
                 searcher.SearchRoot = entry;
+                searcher.PropertiesToLoad.Add("displayName");
                 SearchResult result = searcher.FindOne();
                 if (result != null)
                 {
-                    flag = true;
+                    DirectoryEntry user = result.GetDirectoryEntry();
+                    if (user.Properties.Contains("displayName"))
+                    {
+                        flag = user.Properties["displayName"][0].ToString();
+                    }
                 }
                 return flag;
             }
             catch
             {
                 //AD登入失敗
-                return false;
+                return "no user";
             }
         }
     }
