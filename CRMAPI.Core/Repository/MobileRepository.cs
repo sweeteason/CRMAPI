@@ -88,7 +88,7 @@ namespace CRMAPI.Core.Repository
         /// </summary>
         /// <param name="mobile"></param>
         /// <returns></returns>
-        public bool AddReserve(string no, string status, string reserve)
+        public bool AddReserve(string no, string status,string user, string reserve)
         {
             string SQL = @"
                 if exists (select * from Mobiletime_Staging where tek_repair_tek_mobiletime = @id)
@@ -102,13 +102,14 @@ namespace CRMAPI.Core.Repository
                    end 
             ";
             SQL = @"
-                insert into Mobiletime_Staging (tek_repair_tek_mobiletime,tek_m_status,tek_flag) values (@tek_repair_tek_mobiletime,@tek_m_status,@tek_flag)
+                insert into Mobiletime_Staging (tek_repair_tek_mobiletime,tek_m_status,tek_flag,tek_m_user) values (@tek_repair_tek_mobiletime,@tek_m_status,@tek_flag,@tek_m_user)
             ";
             var parameters = new SqlParameter[]
             {
                  new SqlParameter("tek_repair_tek_mobiletime", no),
                  new SqlParameter("tek_m_status", status),
                  new SqlParameter("tek_flag", reserve),
+                 new SqlParameter("tek_m_user", user),
             };
             try
             {
@@ -135,16 +136,17 @@ namespace CRMAPI.Core.Repository
         /// </summary>
         /// <param name="mobile"></param>
         /// <returns></returns>
-        public bool AddReserve(string no, string status)
+        public bool AddReserve(string no, string status,string user)
         {
 
             string SQL = @"
-                insert into Mobiletime_Staging (tek_repair_tek_mobiletime,tek_m_status) values (@tek_repair_tek_mobiletime,@tek_m_status)
+                insert into Mobiletime_Staging (tek_repair_tek_mobiletime,tek_m_status,tek_m_user) values (@tek_repair_tek_mobiletime,@tek_m_status,@tek_m_user)
             ";
             var parameters = new SqlParameter[]
             {
                  new SqlParameter("tek_repair_tek_mobiletime", no),
                  new SqlParameter("tek_m_status", status),
+                 new SqlParameter("tek_m_user", user),
             };
             try
             {
@@ -167,7 +169,8 @@ namespace CRMAPI.Core.Repository
             string flag = "no user";
             try
             {
-                string ldap_Path = "LDAP://suncolor.com.tw/DC=suncolor, DC=com, DC=tw";// "LDAP://apo.epson.net/OU=tek,OU=ett,DC=apo,DC=Epson,DC=net";
+                //string ldap_Path = "LDAP://suncolor.com.tw/DC=suncolor, DC=com, DC=tw";
+                string ldap_Path = "LDAP://apo.epson.net/OU=tek,OU=ett,DC=apo,DC=Epson,DC=net";
                 DirectoryEntry entry = new DirectoryEntry(ldap_Path, account, pwd, AuthenticationTypes.Secure);
                 DirectorySearcher searcher = new DirectorySearcher(entry);
                 searcher.Filter = "(SAMAccountName=" + account + ")";

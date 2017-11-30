@@ -82,6 +82,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="HtmlPage1.html" />
+    <Content Include="jquery1.12.4.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

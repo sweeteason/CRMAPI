@@ -152,9 +152,9 @@ namespace CRMAPI.Controllers
         /// <param name="reserve"></param> 
         /// <returns></returns>
         [HttpGet]
-        public bool AddReserve(string id, string status, string reserve)
+        public bool AddReserve(string id, string status, string user, string reserve)
         {
-            return mobileRepository.AddReserve(id, status, reserve);
+            return mobileRepository.AddReserve(id, status, user, reserve);
         }
 
         /// <summary>
@@ -164,9 +164,9 @@ namespace CRMAPI.Controllers
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
-        public bool AddReserve(string id, string status)
+        public bool AddReserve(string id, string status, string user)
         {
-            return mobileRepository.AddReserve(id, status);
+            return mobileRepository.AddReserve(id, status, user);
         }
 
         /// <summary>
@@ -175,9 +175,10 @@ namespace CRMAPI.Controllers
         /// <param name="id"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        [HttpPost]
-        public string CheckLogin(string id, [FromBody]string status)
+        [HttpGet, HttpPost]
+        public string CheckLogin(string id, [FromBody] string status)
         {
+            //return status + "!";
             return mobileRepository.CheckLogin(id, status);
         }
 
