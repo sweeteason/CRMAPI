@@ -84,11 +84,11 @@ namespace CRMAPI.Core.Repository
         }
 
         /// <summary>
-        /// 更新時間回報
+        /// 寫入預約記錄
         /// </summary>
         /// <param name="mobile"></param>
         /// <returns></returns>
-        public bool UpdateMobileTime(string account, string status)
+        public bool AddReserve(string no, string status, string reserve)
         {
             string SQL = @"
                 if exists (select * from Mobiletime_Staging where tek_repair_tek_mobiletime = @id)
@@ -101,26 +101,58 @@ namespace CRMAPI.Core.Repository
 	                   select '0'
                    end 
             ";
+            SQL = @"
+                insert into Mobiletime_Staging (tek_repair_tek_mobiletime,tek_m_status,tek_flag) values (@tek_repair_tek_mobiletime,@tek_m_status,@tek_flag)
+            ";
             var parameters = new SqlParameter[]
             {
-                 new SqlParameter("status", status),
-                 new SqlParameter("id", account),
+                 new SqlParameter("tek_repair_tek_mobiletime", no),
+                 new SqlParameter("tek_m_status", status),
+                 new SqlParameter("tek_flag", reserve),
             };
             try
             {
-                DataTable dt = AdoSupport.GetDataTable(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters);
-                if (dt.Rows.Count > 0)
-                {
-                    return dt.Rows[0][0].ToString() == "1";
-                }
-                else
-                {
-                    return false;
-                }
+                //DataTable dt = AdoSupport.GetDataTable(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters);
+                //if (dt.Rows.Count > 0)
+                //{
+                //    return dt.Rows[0][0].ToString() == "1";
+                //}
+                //else
+                //{
+                //    return false;
+                //}
+                return AdoSupport.ExecuteNonQuery(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters) > 0;
             }
             catch (Exception ex)
             {
-                throw new DaoException(SQL, "依帳號取得維修單列表時發生錯誤", ex);
+                return false;
+                //throw new DaoException(SQL, "寫入預約記錄時發生錯誤", ex);
+            }
+        }
+
+        /// <summary>
+        /// 寫入預約記錄
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        public bool AddReserve(string no, string status)
+        {
+
+            string SQL = @"
+                insert into Mobiletime_Staging (tek_repair_tek_mobiletime,tek_m_status) values (@tek_repair_tek_mobiletime,@tek_m_status)
+            ";
+            var parameters = new SqlParameter[]
+            {
+                 new SqlParameter("tek_repair_tek_mobiletime", no),
+                 new SqlParameter("tek_m_status", status),
+            };
+            try
+            {
+                return AdoSupport.ExecuteNonQuery(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters) > 0;
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 

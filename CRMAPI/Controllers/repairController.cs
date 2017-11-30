@@ -145,15 +145,28 @@ namespace CRMAPI.Controllers
         }
 
         /// <summary>
-        /// 更新維修單狀態
+        /// 寫入預約記錄
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
+        /// <param name="reserve"></param> 
+        /// <returns></returns>
+        [HttpGet]
+        public bool AddReserve(string id, string status, string reserve)
+        {
+            return mobileRepository.AddReserve(id, status, reserve);
+        }
+
+        /// <summary>
+        /// 寫入預約記錄
         /// </summary>
         /// <param name="id"></param>
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
-        public bool UpdateStatus(string id, string status)
+        public bool AddReserve(string id, string status)
         {
-            return mobileRepository.UpdateMobileTime(id, status);
+            return mobileRepository.AddReserve(id, status);
         }
 
         /// <summary>
