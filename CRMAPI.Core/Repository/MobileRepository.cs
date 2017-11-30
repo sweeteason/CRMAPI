@@ -167,7 +167,7 @@ namespace CRMAPI.Core.Repository
             string flag = "no user";
             try
             {
-                string ldap_Path = "LDAP://apo.epson.net/OU=tek,OU=ett,DC=apo,DC=Epson,DC=net";
+                string ldap_Path = "LDAP://suncolor.com.tw/DC=suncolor, DC=com, DC=tw";// "LDAP://apo.epson.net/OU=tek,OU=ett,DC=apo,DC=Epson,DC=net";
                 DirectoryEntry entry = new DirectoryEntry(ldap_Path, account, pwd, AuthenticationTypes.Secure);
                 DirectorySearcher searcher = new DirectorySearcher(entry);
                 searcher.Filter = "(SAMAccountName=" + account + ")";

@@ -16,8 +16,8 @@ namespace CRMAPI
 
             config.Routes.MapHttpRoute(
                 name: "NoStatusApi",
-                routeTemplate: "{controller}/{action}/{id}",
-                   defaults: new { id = RouteParameter.Optional }
+                routeTemplate: "{controller}/{action}/{id}/{status}",
+                   defaults: new { id = RouteParameter.Optional, status = RouteParameter.Optional }
             );
 
         }

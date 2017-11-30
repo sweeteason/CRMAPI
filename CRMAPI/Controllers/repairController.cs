@@ -175,8 +175,8 @@ namespace CRMAPI.Controllers
         /// <param name="id"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        [HttpGet]
-        public string CheckLogin(string id, string status)
+        [HttpPost]
+        public string CheckLogin(string id, [FromBody]string status)
         {
             return mobileRepository.CheckLogin(id, status);
         }
