@@ -61,7 +61,7 @@ namespace CRMAPI.Core.Repository
             string SQL = @"
                 select top (@PageSize) * 
                 from (
-                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from Repair_Staging where tek_account = @account
+                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from Repair_Staging where tek_m_user = @account
                 ) a
                 where rownumber > @PageSize * (@Page - 1)
             ";
@@ -147,6 +147,35 @@ namespace CRMAPI.Core.Repository
                  new SqlParameter("tek_repair_tek_mobiletime", no),
                  new SqlParameter("tek_m_status", status),
                  new SqlParameter("tek_m_user", user),
+            };
+            try
+            {
+                return AdoSupport.ExecuteNonQuery(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters) > 0;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        /// <summary>
+        /// 寫入預約記錄
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        public bool AddGPS(string no, string status, string user,string gps)
+        {
+
+            string SQL = @"
+                insert into Mobiletime_Staging (tek_repair_tek_mobiletime,tek_m_status,tek_m_user,tek_GPS) values (@tek_repair_tek_mobiletime,@tek_m_status,@tek_m_user,@tek_GPS)
+            ";
+            var parameters = new SqlParameter[]
+            {
+                 new SqlParameter("tek_repair_tek_mobiletime", no),
+                 new SqlParameter("tek_m_status", status),
+                 new SqlParameter("tek_m_user", user),
+                 new SqlParameter("tek_GPS", gps),
             };
             try
             {

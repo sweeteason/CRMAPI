@@ -162,6 +162,19 @@ namespace CRMAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <param name="status"></param>
+        /// <param name="reserve"></param> 
+        /// <returns></returns>
+        [HttpGet]
+        public bool AddGPS(string id, string status, string user, string gps)
+        {
+            return mobileRepository.AddGPS(id, status, user, gps);
+        }
+
+        /// <summary>
+        /// 寫入預約記錄
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
         public bool AddReserve(string id, string status, string user)
