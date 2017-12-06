@@ -87,5 +87,21 @@ namespace CRMAPI.Core.Entity
         /// GPS
         /// </summary>
         public string tek_GPS { get; set; }
+
+        /// <summary>
+        /// tek_m_user
+        /// </summary>
+        public string tek_m_user { get; set; }
+
+        /// <summary>
+        /// Status
+        /// </summary>
+        public string Status { get; set; }
+
+        /// <summary>
+        /// tek_remark
+        /// </summary>
+        public string tek_remark { get; set; }
+
     }
 }

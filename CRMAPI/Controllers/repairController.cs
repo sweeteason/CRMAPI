@@ -19,83 +19,70 @@ namespace CRMAPI.Controllers
     {
         MobileRepository mobileRepository = new MobileRepository(DatabaseName.ConnectionString);
 
-        ///// <summary>
-        ///// 取得外部傳來的資料
-        ///// </summary>
-        ///// <param name="obj"></param>
-        ///// <returns></returns>
-        //public AppRequestModels PostAppData(AppRequestModels obj)
-        //{
-        //    AppRequestModels armReturn = new AppRequestModels();
+        /// <summary>
+        /// 由外部傳來的驗證資料，組合FireBase需要做推播的功能
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public String PushMessage(iOSFcmPushMessage obj)
+        {
+            string sReturn = "";
+            iOSFcmPushMessage fpmReturn = new iOSFcmPushMessage();
 
-        //    armReturn.RegistrationID = obj.RegistrationID;
+            fpmReturn.APIKey = obj.APIKey;
+            fpmReturn.RegID = obj.RegID;
+            fpmReturn.Message = obj.Message;
 
-        //    return armReturn;
-        //}
+            var result = "-1";
+            var webAddr = "https://fcm.googleapis.com/fcm/send";
 
-        ///// <summary>
-        ///// 由外部傳來的驗證資料，組合FireBase需要做推播的功能
-        ///// </summary>
-        ///// <param name="obj"></param>
-        ///// <returns></returns>
-        //public FCMPushMessage PushMessage(FCMPushMessage obj)
-        //{
-        //    FCMPushMessage fpmReturn = new FCMPushMessage();
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddr);
+            httpWebRequest.ContentType = "application/json;charset=utf-8;";
+            httpWebRequest.Headers.Add($"Authorization:key={fpmReturn.APIKey}");
+            httpWebRequest.Method = "POST";
 
-        //    fpmReturn.APIKey = obj.APIKey;
-        //    fpmReturn.RegID = obj.RegID;
-        //    fpmReturn.Message = obj.Message;
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                var json = new
+                {
+                    to = fpmReturn.RegID,
+                    notification = new
+                    {
+                        body=fpmReturn.Message
+                    }
+                };
+                string p = JsonConvert.SerializeObject(json);//將Linq to json轉為字串
+                streamWriter.Write(p);
+                streamWriter.Flush();
+            }
 
-        //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://android.googleapis.com/gcm/send");
-        //    request.Method = "POST";
-        //    request.ContentType = "application/json;charset=utf-8;";
-        //    request.Headers.Add($"Authorization: key={fpmReturn.APIKey}");
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                result = streamReader.ReadToEnd();
+            }
 
-        //    string RegistrationID = fpmReturn.RegID;
-        //    var postData =
-        //    new
-        //    {
-        //        data = new
-        //        {
-        //            message = fpmReturn.Message //message這個tag要讓前端開發人員知道
-        //        },
-        //        registration_ids = new string[] { RegistrationID }
-        //    };
-        //    string p = JsonConvert.SerializeObject(postData);//將Linq to json轉為字串
-        //    byte[] byteArray = Encoding.UTF8.GetBytes(p);//要發送的字串轉為byte[]
-        //    request.ContentLength = byteArray.Length;
+            JObject oJSON = (JObject)JsonConvert.DeserializeObject(result);
+            if (Convert.ToInt32(oJSON["failure"].ToString()) > 0)
+            {//有失敗情況就寫Log
+                //EventLog.WriteEntry("發送訊息給" + RegistrationID + "失敗：" + responseStr);
 
-        //    Stream dataStream = request.GetRequestStream();
-        //    dataStream.Write(byteArray, 0, byteArray.Length);
-        //    dataStream.Close();
+                oJSON = (JObject)oJSON["results"][0];
+                if (oJSON["error"].ToString() == "InvalidRegistration" || oJSON["error"].ToString() == "NotRegistered")
+                { //無效的RegistrationID
+                  //從DB移除
+                    //SqlParameter[] param = new SqlParameter[] { new SqlParameter() { ParameterName = "@RegistrationID", SqlDbType = SqlDbType.VarChar, Value = RegistrationID } };
+                    //SqlHelper.ExecteNonQuery(CommandType.Text, "Delete from tb_MyRegisID Where RegistrationID=@RegistrationID", param);
 
-        //    //發出Request
-        //    WebResponse response = request.GetResponse();
-        //    Stream responseStream = response.GetResponseStream();
-        //    StreamReader reader = new StreamReader(responseStream);
-        //    string responseStr = reader.ReadToEnd();
-        //    reader.Close();
-        //    responseStream.Close();
-        //    response.Close();
+                }
+                sReturn = oJSON["error"].ToString();
+            }
+            //returnStr.Append(responseStr + "\n");
 
-        //    JObject oJSON = (JObject)JsonConvert.DeserializeObject(responseStr);
-        //    if (Convert.ToInt32(oJSON["failure"].ToString()) > 0)
-        //    {//有失敗情況就寫Log
-        //        //EventLog.WriteEntry("發送訊息給" + RegistrationID + "失敗：" + responseStr);
+            return sReturn;
+        }
 
-        //        oJSON = (JObject)oJSON["results"][0];
-        //        if (oJSON["error"].ToString() == "InvalidRegistration" || oJSON["error"].ToString() == "NotRegistered")
-        //        { //無效的RegistrationID
-        //          //從DB移除
-        //            SqlParameter[] param = new SqlParameter[] { new SqlParameter() { ParameterName = "@RegistrationID", SqlDbType = SqlDbType.VarChar, Value = RegistrationID } };
-        //            //SqlHelper.ExecteNonQuery(CommandType.Text, "Delete from tb_MyRegisID Where RegistrationID=@RegistrationID", param);
 
-        //        }
-        //    }
-        //    //returnStr.Append(responseStr + "\n");
-
-        //    return fpmReturn;
-        //}
         /// <summary>
         /// 取得全部維修資料
         /// </summary>
@@ -158,6 +145,19 @@ namespace CRMAPI.Controllers
             MService.MobileServiceSoapClient ms = new MService.MobileServiceSoapClient();
             ms.SyncMobile("SyncMobiletime", id, "PLUGIN");
             return flag;
+        }
+
+        /// <summary>
+        /// 寫入預約記錄
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
+        /// <param name="reserve"></param> 
+        /// <returns></returns>
+        [HttpGet]
+        public bool AddGPS(string id, string status, string user, string gps)
+        {
+            return mobileRepository.AddGPS(id, status, user, gps);
         }
 
         /// <summary>
