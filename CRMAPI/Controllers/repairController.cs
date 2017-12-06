@@ -143,8 +143,7 @@ namespace CRMAPI.Controllers
         {
             bool flag = mobileRepository.AddReserve(id, status, user, reserve);
             MService.MobileServiceSoapClient ms = new MService.MobileServiceSoapClient();
-            ms.SyncMobile("SyncMobiletime", id, "PLUGIN");
-            return flag;
+            return (ms.SyncMobile("SyncMobiletime", id, "PLUGIN") == "Succeed!") && flag;
         }
 
         /// <summary>
@@ -157,7 +156,9 @@ namespace CRMAPI.Controllers
         [HttpGet]
         public bool AddGPS(string id, string status, string user, string gps)
         {
-            return mobileRepository.AddGPS(id, status, user, gps);
+            bool flag = mobileRepository.AddGPS(id, status, user, gps);
+            MService.MobileServiceSoapClient ms = new MService.MobileServiceSoapClient();
+            return (ms.SyncMobile("SyncMobiletime", id, "PLUGIN") == "Succeed!") && flag;
         }
 
         /// <summary>
@@ -171,8 +172,21 @@ namespace CRMAPI.Controllers
         {
             bool flag = mobileRepository.AddReserve(id, status, user);
             MService.MobileServiceSoapClient ms = new MService.MobileServiceSoapClient();
-            ms.SyncMobile("SyncMobiletime", id, "PLUGIN");
-            return flag;
+            return (ms.SyncMobile("SyncMobiletime", id, "PLUGIN") == "Succeed!") && flag;             
+        }
+
+
+        /// <summary>
+        /// 留言推播
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public void SetPushNotification(string id)
+        {
+            tek_onsitenote onsite = mobileRepository.GetOnSiteNote(id);
+
         }
 
         /// <summary>

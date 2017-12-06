@@ -37,5 +37,22 @@ namespace CRMAPI.Core.Entity
         /// 客戶留言
         /// </summary>
         public string tek_note { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string createdby { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string createdon { get; set; }
+        /// <summary>
+        /// Staging狀態
+        /// </summary>
+        public string Status { get; set; }
+        /// <summary>
+        ///日誌
+        /// </summary>
+        public string Log { get; set; }
     }
 }

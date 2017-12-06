@@ -222,6 +222,31 @@ namespace CRMAPI.Core.Repository
                 return "no user";
             }
         }
+
+        /// <summary>
+        /// CRM留言
+        /// </summary>
+        /// <param name="tek_repair_no"></param>
+        /// <returns></returns>
+        public tek_onsitenote GetOnSiteNote(string tek_repair_no)
+        {
+            string SQL = @"
+                select top 1 * from Onsitenote_Staging where tek_repair_no = @id
+            ";
+            var parameters = new SqlParameter[]
+            {
+                 new SqlParameter("id", tek_repair_no),
+            };
+            try
+            {
+                return AdoSupport.GetEntity<tek_onsitenote>(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw new DaoException(SQL, "取得維修單列表時發生錯誤", ex);
+            }
+        }
     }
 
 }
