@@ -154,7 +154,10 @@ namespace CRMAPI.Controllers
         [HttpGet]
         public bool AddReserve(string id, string status, string user, string reserve)
         {
-            return mobileRepository.AddReserve(id, status, user, reserve);
+            bool flag = mobileRepository.AddReserve(id, status, user, reserve);
+            MService.MobileServiceSoapClient ms = new MService.MobileServiceSoapClient();
+            ms.SyncMobile("SyncMobiletime", id, "PLUGIN");
+            return flag;
         }
 
         /// <summary>
@@ -166,7 +169,10 @@ namespace CRMAPI.Controllers
         [HttpGet]
         public bool AddReserve(string id, string status, string user)
         {
-            return mobileRepository.AddReserve(id, status, user);
+            bool flag = mobileRepository.AddReserve(id, status, user);
+            MService.MobileServiceSoapClient ms = new MService.MobileServiceSoapClient();
+            ms.SyncMobile("SyncMobiletime", id, "PLUGIN");
+            return flag;
         }
 
         /// <summary>
@@ -176,7 +182,7 @@ namespace CRMAPI.Controllers
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet, HttpPost]
-        public string CheckLogin(string id, [FromBody] string status)
+        public string CheckLogin(string id, string status)
         {
             //return status + "!";
             return mobileRepository.CheckLogin(id, status);
