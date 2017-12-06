@@ -9,12 +9,12 @@ namespace CRMAPI.Core.Entity
     {
         private string _regID;
         private string _APIKey;
-        private string _Message;
-
+        private iOSNotificationStruct _Message;
+        
         /// <summary>
         /// 訊息內容
         /// </summary>
-        public string Message
+        public iOSNotificationStruct Message
         {
             get { return _Message; }
             set { _Message = value; }
