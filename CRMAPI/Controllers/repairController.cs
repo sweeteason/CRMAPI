@@ -200,7 +200,7 @@ namespace CRMAPI.Controllers
                     Body = (onsite.tek_serviceaccount + onsite.tek_note)
                 };
 
-                var result = "-1";
+                var result = "-1";//
                 var webAddr = "https://fcm.googleapis.com/fcm/send";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddr);
