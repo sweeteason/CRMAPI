@@ -46,8 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entity\AppRequestModels.cs" />
-    <Compile Include="Entity\FCMPushMessage.cs" />
+    <Compile Include="Entity\iOSFcmPushMessage.cs" />
     <Compile Include="Entity\QueryList.cs" />
     <Compile Include="Entity\tek_mobiletime.cs" />
     <Compile Include="Entity\tek_onsitenote.cs" />
