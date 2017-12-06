@@ -189,7 +189,6 @@ namespace CRMAPI.Controllers
             try
             {
                 tek_onsitenote onsite = mobileRepository.GetOnSiteNote(id);
-
                 
                 iOSFcmPushMessage fpmReturn = new iOSFcmPushMessage();
                 //組合要傳送的字串
