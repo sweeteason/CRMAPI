@@ -183,9 +183,9 @@ namespace CRMAPI.Controllers
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
-        public bool SetPushNotification(string id)
+        public string SetPushNotification(string id)
         {
-            bool boolReturn = true;
+            string boolReturn = "true";
             try
             {
                 tek_onsitenote onsite = mobileRepository.GetOnSiteNote(id);
@@ -224,7 +224,6 @@ namespace CRMAPI.Controllers
                     streamWriter.Write(p);
                     streamWriter.Flush();
                 }
-
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
@@ -246,16 +245,16 @@ namespace CRMAPI.Controllers
                     }
                     if (oJSON["error"].ToString().Length > 0)
                     {
-                        boolReturn = false;
+                        boolReturn = "false";
                     }
                     //sReturn = oJSON["error"].ToString();
                 }
                 //returnStr.Append(responseStr + "\n");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
-            }            
+                boolReturn= ex.Message;
+            }
             return boolReturn;
         }
 
