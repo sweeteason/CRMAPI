@@ -54,5 +54,13 @@ namespace CRMAPI.Core.Entity
         ///日誌
         /// </summary>
         public string Log { get; set; }
+        /// <summary>
+        ///使用者ID
+        /// </summary>
+        public string tek_m_user { get; set; }
+        /// <summary>
+        ///使用者token
+        /// </summary>
+        public string tek_m_user_token { get; set; }
     }
 }
