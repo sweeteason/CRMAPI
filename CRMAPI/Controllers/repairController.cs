@@ -26,6 +26,10 @@ namespace CRMAPI.Controllers
         /// <returns></returns>
         public String PushMessage(iOSFcmPushMessage obj)
         {
+
+            //取得user token
+            string token = mobileRepository.GetToken("傳入user id");
+
             string sReturn = "";
             iOSFcmPushMessage fpmReturn = new iOSFcmPushMessage();
 

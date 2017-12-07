@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Entity\iOSFcmPushMessage.cs" />
     <Compile Include="Entity\iOSNotificationStruct.cs" />
+    <Compile Include="Entity\MToken_Staging.cs" />
     <Compile Include="Entity\QueryList.cs" />
     <Compile Include="Entity\tek_mobiletime.cs" />
     <Compile Include="Entity\tek_onsitenote.cs" />

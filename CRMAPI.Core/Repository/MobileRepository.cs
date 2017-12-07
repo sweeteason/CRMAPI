@@ -258,7 +258,14 @@ namespace CRMAPI.Core.Repository
         {
             bool flag = true;
             string SQL = @"
-                update Onsitenote_Staging set tek_m_user_token = @token where tek_m_user = @user
+                if not exists(select * from MToken_Staging where tek_m_user = @user)
+                   begin
+                      insert into MToken_Staging (tek_m_user,tek_m_user_token) values (@user, @token)
+                   end
+                else 
+                   begin
+                      update MToken_Staging set tek_m_user = @user, tek_m_user_token = @token where tek_m_user = @user
+                   end 
             ";
             var parameters = new SqlParameter[]
             {
@@ -275,6 +282,31 @@ namespace CRMAPI.Core.Repository
                 return false;
             }
         }
+
+        /// <summary>
+        /// 取得 user token
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public string GetToken(string user)
+        {
+            string SQL = @"
+                select * from MToken_Staging where tek_m_user = @user
+            ";
+            var parameters = new SqlParameter[]
+            {
+                 new SqlParameter("user", user),
+            };
+            try
+            {
+                return AdoSupport.GetEntity<MToken_Staging>(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters).tek_m_user_token;
+            }
+            catch (Exception ex)
+            {
+                throw new DaoException(SQL, "取得 user token時發生錯誤", ex);
+            }
+        }
+        
     }
 
 }
