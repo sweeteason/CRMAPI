@@ -247,6 +247,34 @@ namespace CRMAPI.Core.Repository
                 throw new DaoException(SQL, "取得維修單列表時發生錯誤", ex);
             }
         }
+
+        /// <summary>
+        /// 更新 token
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public bool SetUserToken(string user, string token)
+        {
+            bool flag = true;
+            string SQL = @"
+                update Onsitenote_Staging set tek_m_user_token = @token where tek_m_user = @user
+            ";
+            var parameters = new SqlParameter[]
+            {
+                 new SqlParameter("token", token),
+                 new SqlParameter("user", user),
+            };
+            try
+            {
+                flag = AdoSupport.ExecuteNonQuery(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters) > 0 ? true : false;
+                return flag;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 
 }

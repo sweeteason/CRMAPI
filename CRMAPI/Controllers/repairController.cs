@@ -183,6 +183,18 @@ namespace CRMAPI.Controllers
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
+        public bool SetUserToken(string id, string status)
+        {
+            return mobileRepository.SetUserToken(id, status);
+        }
+
+        /// <summary>
+        /// 留言推播
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        [HttpGet]
         public string SetPushNotification(string id)
         {
             string boolReturn = "true";
