@@ -194,22 +194,23 @@ namespace CRMAPI.Controllers
 
         /// <summary>
         /// 留言推播
-        /// </summary>
+        /// </summary>v
         /// <param name="id"></param>
-        /// <param name="status"></param>
+        /// <param name="userid"></param>
         /// <returns></returns>
         [HttpGet]
-        public string SetPushNotification(string id)
+        public string SetPushNotification(string id,string userid)
         {
             string boolReturn = "true";
             try
             {
                 tek_onsitenote onsite = mobileRepository.GetOnSiteNote(id);
-                
+                string user_token = mobileRepository.GetToken(userid);
+
                 iOSFcmPushMessage fpmReturn = new iOSFcmPushMessage();
                 //組合要傳送的字串
                 fpmReturn.APIKey = "AAAAfvUhnv8:APA91bFaChaP_0X0ypjInh63Hj87kqUpDFsTkjg_pZeMSdvpOK77QmPOg5iLOjFKERawonUtVPsY9oUWQ8pKuBceHqB1VBQdwBW16w9JlpSVQ4xurPBX6pL34bFlisUZ_Spx4sNVGHcQ";
-                fpmReturn.RegID = onsite.tek_m_user_token;
+                fpmReturn.RegID = user_token;
                 fpmReturn.Message = new iOSNotificationStruct
                 {
                     Title = "你有一筆新的派工，維修單號：" + onsite.tek_repair_no,
