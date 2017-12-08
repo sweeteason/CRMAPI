@@ -202,7 +202,7 @@ namespace CRMAPI.Controllers
         public string SetPushNotification(string id, string status)
         {
             string boolReturn = "true";
-            
+
             tek_repair onsite = mobileRepository.GetRepairById(id);
             try
             {
@@ -219,13 +219,13 @@ namespace CRMAPI.Controllers
                 fpmReturn.Message = new iOSNotificationStruct
                 {
                     Title = "你有一筆新的派工，維修單號：" + onsite.tek_name,
-                    Body = (onsite.tek_account+"新維修單訊息")
+                    Body = (onsite.tek_account + onsite.tek_remark)
                 };
 
                 var result = "-1"; //
                 var webAddr = "https://fcm.googleapis.com/fcm/send";
 
-                HttpWebRequest httpWebRequest = (HttpWebRequest) WebRequest.Create(webAddr);
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddr);
                 httpWebRequest.ContentType = "application/json;charset=utf-8;";
                 httpWebRequest.Headers.Add($"Authorization:key={fpmReturn.APIKey}");
                 httpWebRequest.Method = "POST";
@@ -246,19 +246,19 @@ namespace CRMAPI.Controllers
                     streamWriter.Write(p);
                     streamWriter.Flush();
                 }
-                var httpResponse = (HttpWebResponse) httpWebRequest.GetResponse();
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     result = streamReader.ReadToEnd();
                 }
 
-                JObject oJSON = (JObject) JsonConvert.DeserializeObject(result);
+                JObject oJSON = (JObject)JsonConvert.DeserializeObject(result);
                 if (Convert.ToInt32(oJSON["failure"].ToString()) > 0)
                 {
-//有失敗情況就寫Log
+                    //有失敗情況就寫Log
                     //EventLog.WriteEntry("發送訊息給" + RegistrationID + "失敗：" + responseStr);
 
-                    oJSON = (JObject) oJSON["results"][0];
+                    oJSON = (JObject)oJSON["results"][0];
                     if (oJSON["error"].ToString() == "InvalidRegistration" ||
                         oJSON["error"].ToString() == "NotRegistered")
                     {
@@ -273,7 +273,7 @@ namespace CRMAPI.Controllers
                         mobileRepository.UpdateOnsitenoteStatus(onsite.tek_name, "error", oJSON["error"].ToString());
                         return "false";
                     }
-                    
+
                     //sReturn = oJSON["error"].ToString();
                 }
                 //returnStr.Append(responseStr + "\n");
@@ -281,7 +281,7 @@ namespace CRMAPI.Controllers
             catch (Exception ex)
             {
                 mobileRepository.UpdateOnsitenoteStatus(onsite.tek_name, "error", ex.Message);
-                return "false";                
+                return "false";
             }
             finally
             {
