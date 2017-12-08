@@ -204,7 +204,7 @@ namespace CRMAPI.Controllers
             string boolReturn = "true";
             try
             {
-                tek_onsitenote onsite = mobileRepository.GetOnSiteNote(id);
+                tek_repair onsite = mobileRepository.GetRepairById(id);
                 string user_token = mobileRepository.GetToken(status);
 
                 iOSFcmPushMessage fpmReturn = new iOSFcmPushMessage();
@@ -213,8 +213,8 @@ namespace CRMAPI.Controllers
                 fpmReturn.RegID = user_token;
                 fpmReturn.Message = new iOSNotificationStruct
                 {
-                    Title = "你有一筆新的派工，維修單號：" + onsite.tek_repair_no,
-                    Body = (onsite.tek_serviceaccount + onsite.tek_note)
+                    //Title = "你有一筆新的派工，維修單號：" + onsite.tek_repair_no,
+                    //Body = (onsite.tek_serviceaccount + onsite.tek_note)
                 };
 
                 var result = "-1";//

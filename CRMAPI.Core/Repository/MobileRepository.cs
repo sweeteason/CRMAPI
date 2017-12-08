@@ -248,6 +248,33 @@ namespace CRMAPI.Core.Repository
             }
         }
 
+
+        /// <summary>
+        /// 依照編號取得維修資料
+        /// </summary>
+        /// <param name="tek_repair_no"></param>
+        /// <returns></returns>
+        public tek_repair GetRepairById(string tek_name)
+        {
+            string SQL = @"
+                select top 1 * from Repair_Staging where tek_name = @tek_name
+            ";
+            var parameters = new SqlParameter[]
+            {
+                 new SqlParameter("tek_name", tek_name),
+            };
+            try
+            {
+                return AdoSupport.GetEntity<tek_repair>(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw new DaoException(SQL, "依照編號取得維修資料時發生錯誤", ex);
+            }
+        }
+
+
         /// <summary>
         /// 更新 token
         /// </summary>
