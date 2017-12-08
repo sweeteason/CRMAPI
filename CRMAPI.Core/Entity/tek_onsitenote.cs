@@ -39,11 +39,11 @@ namespace CRMAPI.Core.Entity
         public string tek_note { get; set; }
 
         /// <summary>
-        /// 
+        /// 留言人
         /// </summary>
         public string createdby { get; set; }
         /// <summary>
-        /// 
+        /// 留言日期
         /// </summary>
         public string createdon { get; set; }
         /// <summary>
