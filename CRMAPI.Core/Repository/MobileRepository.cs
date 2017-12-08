@@ -299,7 +299,15 @@ namespace CRMAPI.Core.Repository
             };
             try
             {
-                return AdoSupport.GetEntity<MToken_Staging>(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters).tek_m_user_token;
+                MToken_Staging obj = AdoSupport.GetEntity<MToken_Staging>(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters);
+                if(obj == null)
+                {
+                    return "";
+                }
+                else
+                {
+                    return obj.tek_m_user_token;
+                }
             }
             catch (Exception ex)
             {

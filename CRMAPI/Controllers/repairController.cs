@@ -196,16 +196,16 @@ namespace CRMAPI.Controllers
         /// 留言推播
         /// </summary>v
         /// <param name="id"></param>
-        /// <param name="userid"></param>
+        /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
-        public string SetPushNotification(string id,string userid)
+        public string SetPushNotification(string id, string status)
         {
             string boolReturn = "true";
             try
             {
                 tek_onsitenote onsite = mobileRepository.GetOnSiteNote(id);
-                string user_token = mobileRepository.GetToken(userid);
+                string user_token = mobileRepository.GetToken(status);
 
                 iOSFcmPushMessage fpmReturn = new iOSFcmPushMessage();
                 //組合要傳送的字串
