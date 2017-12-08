@@ -28,25 +28,26 @@ namespace CRMAPI.Controllers
         public string SetPushNotification(string id, string status)
         {
             string boolReturn = "true";
+            tek_onsitenote onsite = mobileRepository.GetOnSiteNote(id);
             try
             {
-                tek_onsitenote onsite = mobileRepository.GetOnSiteNote(id);
                 string user_token = mobileRepository.GetToken(status);
 
                 iOSFcmPushMessage fpmReturn = new iOSFcmPushMessage();
                 //組合要傳送的字串
-                fpmReturn.APIKey = "AAAAfvUhnv8:APA91bFaChaP_0X0ypjInh63Hj87kqUpDFsTkjg_pZeMSdvpOK77QmPOg5iLOjFKERawonUtVPsY9oUWQ8pKuBceHqB1VBQdwBW16w9JlpSVQ4xurPBX6pL34bFlisUZ_Spx4sNVGHcQ";
+                fpmReturn.APIKey =
+                    "AAAAfvUhnv8:APA91bFaChaP_0X0ypjInh63Hj87kqUpDFsTkjg_pZeMSdvpOK77QmPOg5iLOjFKERawonUtVPsY9oUWQ8pKuBceHqB1VBQdwBW16w9JlpSVQ4xurPBX6pL34bFlisUZ_Spx4sNVGHcQ";
                 fpmReturn.RegID = user_token;
                 fpmReturn.Message = new iOSNotificationStruct
                 {
-                    Title = "你有一筆新的派工，維修單號：" + onsite.tek_repair_no,
+                    Title = "你有一筆新的留言，維修單號：" + onsite.tek_repair_no,
                     Body = (onsite.tek_serviceaccount + onsite.tek_note)
                 };
 
-                var result = "-1";//
+                var result = "-1"; //
                 var webAddr = "https://fcm.googleapis.com/fcm/send";
 
-                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddr);
+                HttpWebRequest httpWebRequest = (HttpWebRequest) WebRequest.Create(webAddr);
                 httpWebRequest.ContentType = "application/json;charset=utf-8;";
                 httpWebRequest.Headers.Add($"Authorization:key={fpmReturn.APIKey}");
                 httpWebRequest.Method = "POST";
@@ -63,40 +64,49 @@ namespace CRMAPI.Controllers
                             body = fpmReturn.Message.Body
                         }
                     };
-                    string p = JsonConvert.SerializeObject(json);//將Linq to json轉為字串
+                    string p = JsonConvert.SerializeObject(json); //將Linq to json轉為字串
                     streamWriter.Write(p);
                     streamWriter.Flush();
                 }
-                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                var httpResponse = (HttpWebResponse) httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     result = streamReader.ReadToEnd();
                 }
 
-                JObject oJSON = (JObject)JsonConvert.DeserializeObject(result);
+                JObject oJSON = (JObject) JsonConvert.DeserializeObject(result);
                 if (Convert.ToInt32(oJSON["failure"].ToString()) > 0)
-                {//有失敗情況就寫Log
-                 //EventLog.WriteEntry("發送訊息給" + RegistrationID + "失敗：" + responseStr);
+                {
+//有失敗情況就寫Log
+                    //EventLog.WriteEntry("發送訊息給" + RegistrationID + "失敗：" + responseStr);
 
-                    oJSON = (JObject)oJSON["results"][0];
-                    if (oJSON["error"].ToString() == "InvalidRegistration" || oJSON["error"].ToString() == "NotRegistered")
-                    { //無效的RegistrationID
-                      //從DB移除
-                      //SqlParameter[] param = new SqlParameter[] { new SqlParameter() { ParameterName = "@RegistrationID", SqlDbType = SqlDbType.VarChar, Value = RegistrationID } };
-                      //SqlHelper.ExecteNonQuery(CommandType.Text, "Delete from tb_MyRegisID Where RegistrationID=@RegistrationID", param);
+                    oJSON = (JObject) oJSON["results"][0];
+                    if (oJSON["error"].ToString() == "InvalidRegistration" ||
+                        oJSON["error"].ToString() == "NotRegistered")
+                    {
+                        //無效的RegistrationID
+                        //從DB移除
+                        //SqlParameter[] param = new SqlParameter[] { new SqlParameter() { ParameterName = "@RegistrationID", SqlDbType = SqlDbType.VarChar, Value = RegistrationID } };
+                        //SqlHelper.ExecteNonQuery(CommandType.Text, "Delete from tb_MyRegisID Where RegistrationID=@RegistrationID", param);
 
                     }
                     if (oJSON["error"].ToString().Length > 0)
                     {
-                        boolReturn = "false";
+                        mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, "error", oJSON["error"].ToString());
+                        return "false";
                     }
                     //sReturn = oJSON["error"].ToString();
                 }
                 //returnStr.Append(responseStr + "\n");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                boolReturn = "false";
+                mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, "error", ex.Message);
+                return "false";
+            }
+            finally
+            {
+                mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, onsite.Status, "");
             }
             return boolReturn;
 
