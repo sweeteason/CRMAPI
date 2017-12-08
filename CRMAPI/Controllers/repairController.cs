@@ -52,7 +52,7 @@ namespace CRMAPI.Controllers
                     to = fpmReturn.RegID,
                     notification = new
                     {
-                        body=fpmReturn.Message
+                        body = fpmReturn.Message
                     }
                 };
                 string p = JsonConvert.SerializeObject(json);//將Linq to json轉為字串
@@ -75,8 +75,8 @@ namespace CRMAPI.Controllers
                 if (oJSON["error"].ToString() == "InvalidRegistration" || oJSON["error"].ToString() == "NotRegistered")
                 { //無效的RegistrationID
                   //從DB移除
-                    //SqlParameter[] param = new SqlParameter[] { new SqlParameter() { ParameterName = "@RegistrationID", SqlDbType = SqlDbType.VarChar, Value = RegistrationID } };
-                    //SqlHelper.ExecteNonQuery(CommandType.Text, "Delete from tb_MyRegisID Where RegistrationID=@RegistrationID", param);
+                  //SqlParameter[] param = new SqlParameter[] { new SqlParameter() { ParameterName = "@RegistrationID", SqlDbType = SqlDbType.VarChar, Value = RegistrationID } };
+                  //SqlHelper.ExecteNonQuery(CommandType.Text, "Delete from tb_MyRegisID Where RegistrationID=@RegistrationID", param);
 
                 }
                 sReturn = oJSON["error"].ToString();
@@ -132,7 +132,7 @@ namespace CRMAPI.Controllers
             query.Page = page;
             query.PageSize = pageSize;
             query.Keyword = id;
-            return mobileRepository.GetRepairListByAccount(query).Where(p=> p.tek_repairstatus == status);
+            return mobileRepository.GetRepairListByAccount(query).Where(p => p.tek_repairstatus == status);
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace CRMAPI.Controllers
         {
             bool flag = mobileRepository.AddReserve(id, status, user);
             MService.MobileServiceSoapClient ms = new MService.MobileServiceSoapClient();
-            return (ms.SyncMobile("SyncMobiletime", id, "PLUGIN") == "Succeed!") && flag;             
+            return (ms.SyncMobile("SyncMobiletime", id, "PLUGIN") == "Succeed!") && flag;
         }
 
 
@@ -268,9 +268,9 @@ namespace CRMAPI.Controllers
                 }
                 //returnStr.Append(responseStr + "\n");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                boolReturn= ex.Message;
+                boolReturn = "false";
             }
             return boolReturn;
         }
