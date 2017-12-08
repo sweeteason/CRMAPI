@@ -274,6 +274,59 @@ namespace CRMAPI.Core.Repository
             }
         }
 
+        /// <summary>
+        /// 維修單變更狀態
+        /// </summary>
+        /// <param name="tek_name">維修單號</param>
+        /// <param name="status">狀態</param>
+        /// <param name="Log">Log</param>
+        public void UpdateRepairStatus(string tek_name, string status, string Log)
+        {
+            string SQL = @"
+                update Repair_Staging set status = @status, [log] = @log where tek_name = @id
+            ";
+            var parameters = new SqlParameter[]
+            {
+                 new SqlParameter("id", tek_name),
+                 new SqlParameter("status", status),
+                 new SqlParameter("Log", Log),
+            };
+            try
+            {
+                 AdoSupport.ExecuteNonQuery(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new DaoException(SQL, "維修單變更狀態時發生錯誤", ex);
+            }
+        }
+
+        /// <summary>
+        /// 留言變更狀態
+        /// </summary>
+        /// <param name="tek_name">維修單號</param>
+        /// <param name="status">狀態</param>
+        /// <param name="Log">Log</param>
+        public void UpdateOnsitenoteStatus(string tek_repair_no, string status, string Log)
+        {
+            string SQL = @"
+                update Onsitenote_Staging set status = @status, [log] = @log where tek_repair_no = @id
+            ";
+            var parameters = new SqlParameter[]
+            {
+                 new SqlParameter("id", tek_repair_no),
+                 new SqlParameter("status", status),
+                 new SqlParameter("Log", Log),
+            };
+            try
+            {
+                AdoSupport.ExecuteNonQuery(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new DaoException(SQL, "留言變更狀態時發生錯誤", ex);
+            }
+        }
 
         /// <summary>
         /// 更新 token

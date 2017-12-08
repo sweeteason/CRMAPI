@@ -273,6 +273,14 @@ namespace CRMAPI.Controllers
                 boolReturn = "false";
             }
             return boolReturn;
+
+            /// <summary>
+            /// 維修單變更狀態
+            /// </summary>
+            /// <param name="tek_name">維修單號</param>
+            /// <param name="status">狀態</param>
+            /// <param name="Log">Log</param>
+            //public void UpdateRepairStatus(string tek_name, string status, string Log)
         }
 
         /// <summary>

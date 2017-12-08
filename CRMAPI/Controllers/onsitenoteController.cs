@@ -99,6 +99,14 @@ namespace CRMAPI.Controllers
                 boolReturn = "false";
             }
             return boolReturn;
+
+            /// <summary>
+            /// 留言變更狀態
+            /// </summary>
+            /// <param name="tek_name">維修單號</param>
+            /// <param name="status">狀態</param>
+            /// <param name="Log">Log</param>
+            //public void UpdateOnsitenoteStatus(string tek_repair_no, string status, string Log)
         }
     }
 }
