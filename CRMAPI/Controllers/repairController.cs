@@ -204,6 +204,10 @@ namespace CRMAPI.Controllers
             string boolReturn = "true";
 
             tek_repair onsite = mobileRepository.GetRepairById(id);
+            if (onsite == null)
+            {
+                return "No Record！此單號" + id + "(使用者：" + status + ")，查無維修單";
+            }
             try
             {
 

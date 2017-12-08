@@ -29,6 +29,10 @@ namespace CRMAPI.Controllers
         {
             string boolReturn = "true";
             tek_onsitenote onsite = mobileRepository.GetOnSiteNote(id);
+            if (onsite == null)
+            {
+                return "No Record！此單號" + id + "(使用者：" + status + ")，查無留言";
+            }
             try
             {
                 string user_token = mobileRepository.GetToken(status);
