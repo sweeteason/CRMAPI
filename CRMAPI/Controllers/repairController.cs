@@ -270,25 +270,26 @@ namespace CRMAPI.Controllers
                     }
                     if (oJSON["error"].ToString().Length > 0)
                     {
-                        mobileRepository.UpdateOnsitenoteStatus(onsite.tek_name, "error", oJSON["error"].ToString());
+                        mobileRepository.UpdateRepairStatus(onsite.tek_name, "error", oJSON["error"].ToString());
                         return "false";
-                    }
-                    else
-                    {
-                        mobileRepository.UpdateOnsitenoteStatus(onsite.tek_name, "complete", "");
-                    }
+                    }                    
                     //sReturn = oJSON["error"].ToString();
+                }
+                else
+                {
+                    mobileRepository.UpdateRepairStatus(onsite.tek_name, "complete", "");
                 }
                 //returnStr.Append(responseStr + "\n");
             }
             catch (Exception ex)
             {
-                mobileRepository.UpdateOnsitenoteStatus(onsite.tek_name, "error", ex.Message);
-                return "false";
+                throw ex;
+                //mobileRepository.UpdateRepairStatus(onsite.tek_name, "error", ex.Message);
+                //return "false";
             }
             finally
             {
-                mobileRepository.UpdateOnsitenoteStatus(onsite.tek_name, onsite.Status, "");
+                mobileRepository.UpdateRepairStatus(onsite.tek_name, onsite.Status, "");
             }
             return boolReturn;
 

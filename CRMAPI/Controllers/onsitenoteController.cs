@@ -91,19 +91,20 @@ namespace CRMAPI.Controllers
                     {
                         mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, "error", oJSON["error"].ToString());
                         return "false";
-                    }
-                    else
-                    {
-                        mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, "complete", "");
-                    }
+                    }                    
                     //sReturn = oJSON["error"].ToString();
+                }
+                else
+                {
+                    mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, "complete", "");
                 }
                 //returnStr.Append(responseStr + "\n");
             }
             catch (Exception ex)
             {
-                mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, "error", ex.Message);
-                return "false";
+                throw ex;
+                //mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, "error", ex.Message);
+                //return "false";
             }
             finally
             {
