@@ -51,7 +51,7 @@ namespace CRMAPI.Controllers
                 var result = "-1"; //
                 var webAddr = "https://fcm.googleapis.com/fcm/send";
 
-                HttpWebRequest httpWebRequest = (HttpWebRequest) WebRequest.Create(webAddr);
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddr);
                 httpWebRequest.ContentType = "application/json;charset=utf-8;";
                 httpWebRequest.Headers.Add($"Authorization:key={fpmReturn.APIKey}");
                 httpWebRequest.Method = "POST";
@@ -72,32 +72,29 @@ namespace CRMAPI.Controllers
                     streamWriter.Write(p);
                     streamWriter.Flush();
                 }
-                var httpResponse = (HttpWebResponse) httpWebRequest.GetResponse();
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     result = streamReader.ReadToEnd();
                 }
 
-                JObject oJSON = (JObject) JsonConvert.DeserializeObject(result);
+                JObject oJSON = (JObject)JsonConvert.DeserializeObject(result);
                 if (Convert.ToInt32(oJSON["failure"].ToString()) > 0)
                 {
-//有失敗情況就寫Log
-                    //EventLog.WriteEntry("發送訊息給" + RegistrationID + "失敗：" + responseStr);
-
-                    oJSON = (JObject) oJSON["results"][0];
+                    oJSON = (JObject)oJSON["results"][0];
                     if (oJSON["error"].ToString() == "InvalidRegistration" ||
                         oJSON["error"].ToString() == "NotRegistered")
                     {
                         //無效的RegistrationID
-                        //從DB移除
-                        //SqlParameter[] param = new SqlParameter[] { new SqlParameter() { ParameterName = "@RegistrationID", SqlDbType = SqlDbType.VarChar, Value = RegistrationID } };
-                        //SqlHelper.ExecteNonQuery(CommandType.Text, "Delete from tb_MyRegisID Where RegistrationID=@RegistrationID", param);
-
                     }
                     if (oJSON["error"].ToString().Length > 0)
                     {
                         mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, "error", oJSON["error"].ToString());
                         return "false";
+                    }
+                    else
+                    {
+                        mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, "complete", "");
                     }
                     //sReturn = oJSON["error"].ToString();
                 }
@@ -114,12 +111,12 @@ namespace CRMAPI.Controllers
             }
             return boolReturn;
 
-            /// <summary>
-            /// 留言變更狀態
-            /// </summary>
-            /// <param name="tek_name">維修單號</param>
-            /// <param name="status">狀態</param>
-            /// <param name="Log">Log</param>
+            ///// <summary>
+            ///// 留言變更狀態
+            ///// </summary>
+            ///// <param name="tek_name">維修單號</param>
+            ///// <param name="status">狀態</param>
+            ///// <param name="Log">Log</param>
             //public void UpdateOnsitenoteStatus(string tek_repair_no, string status, string Log)
         }
     }

@@ -267,17 +267,16 @@ namespace CRMAPI.Controllers
                         oJSON["error"].ToString() == "NotRegistered")
                     {
                         //無效的RegistrationID
-                        //從DB移除
-                        //SqlParameter[] param = new SqlParameter[] { new SqlParameter() { ParameterName = "@RegistrationID", SqlDbType = SqlDbType.VarChar, Value = RegistrationID } };
-                        //SqlHelper.ExecteNonQuery(CommandType.Text, "Delete from tb_MyRegisID Where RegistrationID=@RegistrationID", param);
-
                     }
                     if (oJSON["error"].ToString().Length > 0)
                     {
                         mobileRepository.UpdateOnsitenoteStatus(onsite.tek_name, "error", oJSON["error"].ToString());
                         return "false";
                     }
-
+                    else
+                    {
+                        mobileRepository.UpdateOnsitenoteStatus(onsite.tek_name, "complete", "");
+                    }
                     //sReturn = oJSON["error"].ToString();
                 }
                 //returnStr.Append(responseStr + "\n");
@@ -293,12 +292,12 @@ namespace CRMAPI.Controllers
             }
             return boolReturn;
 
-            /// <summary>
-            /// 維修單變更狀態
-            /// </summary>
-            /// <param name="tek_name">維修單號</param>
-            /// <param name="status">狀態</param>
-            /// <param name="Log">Log</param>
+            ///// <summary>
+            ///// 維修單變更狀態
+            ///// </summary>
+            ///// <param name="tek_name">維修單號</param>
+            ///// <param name="status">狀態</param>
+            ///// <param name="Log">Log</param>
             //public void UpdateRepairStatus(string tek_name, string status, string Log)
         }
 
