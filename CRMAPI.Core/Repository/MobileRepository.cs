@@ -283,7 +283,8 @@ namespace CRMAPI.Core.Repository
         public void UpdateRepairStatus(string tek_name, string status, string Log)
         {
             string SQL = @"
-                update Repair_Staging set status = @status, [log] = @log where tek_name = @id
+                update Repair_Staging set status = @status, [log] = @log 
+                where id in (select top 1 id from Repair_Staging where tek_name = @id and status = 'Waiting' order by id)
             ";
             var parameters = new SqlParameter[]
             {
@@ -310,7 +311,8 @@ namespace CRMAPI.Core.Repository
         public void UpdateOnsitenoteStatus(string tek_repair_no, string status, string Log)
         {
             string SQL = @"
-                update Onsitenote_Staging set status = @status, [log] = @log where tek_repair_no = @id
+                update Onsitenote_Staging set status = @status, [log] = @log 
+                where id in (select top 1 id from Onsitenote_Staging where tek_repair_no = @id and status = 'Waiting' order by id)
             ";
             var parameters = new SqlParameter[]
             {
