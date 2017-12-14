@@ -99,18 +99,19 @@ namespace CRMAPI.Controllers
                     mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, "complete", "");
                 }
                 //returnStr.Append(responseStr + "\n");
+                return boolReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
-                //mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, "error", ex.Message);
-                //return "false";
+                //throw ex;
+                mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, "error", ex.Message);
+                return "false";
             }
-            finally
-            {
-                mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, onsite.Status, "");
-            }
-            return boolReturn;
+            //finally
+            //{
+            //    mobileRepository.UpdateOnsitenoteStatus(onsite.tek_repair_no, onsite.Status, "");
+            //}
+            //return boolReturn;
 
             ///// <summary>
             ///// 留言變更狀態

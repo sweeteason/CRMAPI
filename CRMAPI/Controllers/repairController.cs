@@ -280,18 +280,19 @@ namespace CRMAPI.Controllers
                     mobileRepository.UpdateRepairStatus(onsite.tek_name, "complete", "");
                 }
                 //returnStr.Append(responseStr + "\n");
+                return boolReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
-                //mobileRepository.UpdateRepairStatus(onsite.tek_name, "error", ex.Message);
-                //return "false";
+                //throw ex;
+                mobileRepository.UpdateRepairStatus(onsite.tek_name, "error", ex.Message);
+                return "false";
             }
-            finally
-            {
-                mobileRepository.UpdateRepairStatus(onsite.tek_name, onsite.Status, "");
-            }
-            return boolReturn;
+            //finally
+            //{
+            //    mobileRepository.UpdateRepairStatus(onsite.tek_name, onsite.Status, "");
+            //}
+            
 
             ///// <summary>
             ///// 維修單變更狀態
