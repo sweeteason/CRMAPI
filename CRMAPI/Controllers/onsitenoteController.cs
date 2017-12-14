@@ -25,17 +25,17 @@ namespace CRMAPI.Controllers
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
-        public string SetPushNotification(string id, string status)
+        public string SetPushNotification(string id)
         {
             string boolReturn = "true";
             tek_onsitenote onsite = mobileRepository.GetOnSiteNote(id);
             if (onsite == null)
             {
-                return "No Record！此單號" + id + "(使用者：" + status + ")，查無留言";
+                return "No Record！此單號" + id + "(使用者：" + onsite.tek_m_user + ")，查無留言";
             }
             try
             {
-                string user_token = mobileRepository.GetToken(status);
+                string user_token = mobileRepository.GetToken(onsite.tek_m_user);
 
                 iOSFcmPushMessage fpmReturn = new iOSFcmPushMessage();
                 //組合要傳送的字串

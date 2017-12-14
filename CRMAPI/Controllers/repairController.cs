@@ -199,19 +199,19 @@ namespace CRMAPI.Controllers
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
-        public string SetPushNotification(string id, string status)
+        public string SetPushNotification(string id)
         {
             string boolReturn = "true";
 
             tek_repair onsite = mobileRepository.GetRepairById(id);
             if (onsite == null)
             {
-                return "No Record！此單號" + id + "(使用者：" + status + ")，查無維修單";
+                return "No Record！此單號" + id + "(使用者：" + onsite.tek_m_user + ")，查無維修單";
             }
             try
             {
 
-                string user_token = mobileRepository.GetToken(status);
+                string user_token = mobileRepository.GetToken(onsite.tek_m_user); //status
 
 
 
