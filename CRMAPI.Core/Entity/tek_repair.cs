@@ -69,6 +69,16 @@ namespace CRMAPI.Core.Entity
         public string tek_contact { get; set; }
 
         /// <summary>
+        /// 狀態
+        /// </summary>
+        public string tek_m_status { get; set; }
+
+        /// <summary>
+        /// tek_flag
+        /// </summary>
+        public string tek_flag { get; set; }
+
+        /// <summary>
         /// 客戶電話
         /// </summary>
         public string tek_telephone { get; set; }

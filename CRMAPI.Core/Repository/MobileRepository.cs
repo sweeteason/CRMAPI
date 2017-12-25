@@ -52,6 +52,37 @@ namespace CRMAPI.Core.Repository
         }
 
         /// <summary>
+        /// 取得留言列表
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public List<tek_onsitenote> GetOnSiteNoteList(QueryList query)
+        {
+            string SQL = @"
+                select top (@PageSize) * 
+                from (
+                    select *,row_number() over (order by id desc) as rownumber from Onsitenote_Staging
+                ) a
+                where rownumber > @PageSize * (@Page - 1)
+            ";
+
+            var parameters = new SqlParameter[]
+            {
+                 new SqlParameter("PageSize", query.PageSize),
+                 new SqlParameter("Page", query.Page),
+            };
+            try
+            {
+                return AdoSupport.GetEntityList<tek_onsitenote>(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw new DaoException(SQL, "取得留言列表時發生錯誤", ex);
+            }
+        }
+
+        /// <summary>
         /// 依帳號取得維修單列表
         /// </summary>
         /// <param name="query"></param>
@@ -244,7 +275,58 @@ namespace CRMAPI.Core.Repository
             }
             catch (Exception ex)
             {
-                throw new DaoException(SQL, "取得維修單列表時發生錯誤", ex);
+                throw new DaoException(SQL, "依維修單號取得留言時發生錯誤", ex);
+            }
+        }
+
+        /// <summary>
+        /// CRM留言
+        /// </summary>
+        /// <param name="tek_repair_no"></param>
+        /// <returns></returns>
+        public List<tek_onsitenote> GetOnSiteNoteList(string tek_repair_no)
+        {
+            string SQL = @"
+                select * from Onsitenote_Staging where tek_repair_no = @id
+            ";
+            var parameters = new SqlParameter[]
+            {
+                 new SqlParameter("id", tek_repair_no),
+            };
+            try
+            {
+                return AdoSupport.GetEntityList<tek_onsitenote>(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw new DaoException(SQL, "依維修單號取得留言時發生錯誤", ex);
+            }
+        }
+
+
+        /// <summary>
+        /// CRM留言
+        /// </summary>
+        /// <param name="tek_repair_no"></param>
+        /// <returns></returns>
+        public List<tek_onsitenote> GetOnSiteNoteByUser(string user)
+        {
+            string SQL = @"
+                select * from Onsitenote_Staging where tek_m_user = @id
+            ";
+            var parameters = new SqlParameter[]
+            {
+                 new SqlParameter("id", user),
+            };
+            try
+            {
+                return AdoSupport.GetEntityList<tek_onsitenote>(System.Data.CommandType.Text, SQL, sqlConnectionString, parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw new DaoException(SQL, "依帳號取得留言時發生錯誤", ex);
             }
         }
 
@@ -273,6 +355,7 @@ namespace CRMAPI.Core.Repository
                 throw new DaoException(SQL, "依照編號取得維修資料時發生錯誤", ex);
             }
         }
+
 
         /// <summary>
         /// 維修單變更狀態

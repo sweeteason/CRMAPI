@@ -121,5 +121,52 @@ namespace CRMAPI.Controllers
             ///// <param name="Log">Log</param>
             //public void UpdateOnsitenoteStatus(string tek_repair_no, string status, string Log)
         }
+
+        /// <summary>
+        /// 取得留言列表
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public IEnumerable<tek_onsitenote> GetOnSiteNoteList(int page = 1, int pageSize = 10)
+        {
+            QueryList query = new QueryList();
+            query.Page = page;
+            query.PageSize = pageSize;
+            return mobileRepository.GetOnSiteNoteList(query);
+        }
+
+        /// <summary>
+        /// 取得留言列表
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public tek_onsitenote GetFirstOnSiteNoteById(string id)
+        {
+            return mobileRepository.GetOnSiteNote(id);
+        }
+
+        /// <summary>
+        /// 取得留言列表
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public IEnumerable<tek_onsitenote> GetOnSiteNoteById(string id)
+        {
+            return mobileRepository.GetOnSiteNoteList(id);
+        }
+
+        /// <summary>
+        /// 取得留言列表
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public IEnumerable<tek_onsitenote> GetOnSiteNoteByUser(string id)
+        {
+            return mobileRepository.GetOnSiteNoteByUser(id);
+        }
     }
 }
