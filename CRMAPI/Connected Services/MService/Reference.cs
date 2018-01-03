@@ -50,7 +50,7 @@ namespace CRMAPI.MService {
         public string logicalName;
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
-        public string tek_repair_tek_mobiletime;
+        public string parameter;
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
         public string function;
@@ -58,9 +58,9 @@ namespace CRMAPI.MService {
         public SyncMobileRequestBody() {
         }
         
-        public SyncMobileRequestBody(string logicalName, string tek_repair_tek_mobiletime, string function) {
+        public SyncMobileRequestBody(string logicalName, string parameter, string function) {
             this.logicalName = logicalName;
-            this.tek_repair_tek_mobiletime = tek_repair_tek_mobiletime;
+            this.parameter = parameter;
             this.function = function;
         }
     }
@@ -131,11 +131,11 @@ namespace CRMAPI.MService {
             return base.Channel.SyncMobile(request);
         }
         
-        public string SyncMobile(string logicalName, string tek_repair_tek_mobiletime, string function) {
+        public string SyncMobile(string logicalName, string parameter, string function) {
             CRMAPI.MService.SyncMobileRequest inValue = new CRMAPI.MService.SyncMobileRequest();
             inValue.Body = new CRMAPI.MService.SyncMobileRequestBody();
             inValue.Body.logicalName = logicalName;
-            inValue.Body.tek_repair_tek_mobiletime = tek_repair_tek_mobiletime;
+            inValue.Body.parameter = parameter;
             inValue.Body.function = function;
             CRMAPI.MService.SyncMobileResponse retVal = ((CRMAPI.MService.MobileServiceSoap)(this)).SyncMobile(inValue);
             return retVal.Body.SyncMobileResult;
@@ -146,11 +146,11 @@ namespace CRMAPI.MService {
             return base.Channel.SyncMobileAsync(request);
         }
         
-        public System.Threading.Tasks.Task<CRMAPI.MService.SyncMobileResponse> SyncMobileAsync(string logicalName, string tek_repair_tek_mobiletime, string function) {
+        public System.Threading.Tasks.Task<CRMAPI.MService.SyncMobileResponse> SyncMobileAsync(string logicalName, string parameter, string function) {
             CRMAPI.MService.SyncMobileRequest inValue = new CRMAPI.MService.SyncMobileRequest();
             inValue.Body = new CRMAPI.MService.SyncMobileRequestBody();
             inValue.Body.logicalName = logicalName;
-            inValue.Body.tek_repair_tek_mobiletime = tek_repair_tek_mobiletime;
+            inValue.Body.parameter = parameter;
             inValue.Body.function = function;
             return ((CRMAPI.MService.MobileServiceSoap)(this)).SyncMobileAsync(inValue);
         }

@@ -36,7 +36,12 @@ namespace CRMAPI.Core.Entity
         /// <summary>
         /// 收件日期
         /// </summary>
-        public string tek_recipient_date { get; set; }
+        public string tek_recipient_date
+        {
+            get { return Convert.ToDateTime(_tek_recipient_date).ToString("yyyy/MM/dd HH:mm:ss"); }
+            set { _tek_recipient_date = value; }
+        }
+        private string _tek_recipient_date;
 
         /// <summary>
         /// 服務方式

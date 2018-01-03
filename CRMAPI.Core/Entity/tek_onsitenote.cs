@@ -45,7 +45,15 @@ namespace CRMAPI.Core.Entity
         /// <summary>
         /// 留言日期
         /// </summary>
-        public string createdon { get; set; }
+        public string createdon
+        {
+            get { return Convert.ToDateTime(_createdon).ToString("yyyy/MM/dd HH:mm:ss"); }
+            set { _createdon = value; }
+        }
+        string _createdon;
+
+
+
         /// <summary>
         /// Staging狀態
         /// </summary>
