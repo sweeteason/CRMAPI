@@ -27,10 +27,16 @@ namespace CRMAPI.Core.Repository
         /// <returns></returns>
         public List<tek_repair> GetRepairList(QueryList query)
         {
+            //狀態5的不傳
             string SQL = @"
+                with tmp as (
+                    select a.*,b.tek_m_status,
+                    (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_name and tek_m_status = '5') as has5,
+                    row_number() over (partition by tek_name,tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where tek_m_status <> '5'
+                )
                 select top (@PageSize) * 
                 from (
-                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from Repair_Staging
+                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from tmp where con = 1 and has5 = 0 
                 ) a
                 where rownumber > @PageSize * (@Page - 1)
             ";
@@ -90,9 +96,15 @@ namespace CRMAPI.Core.Repository
         public List<tek_repair> GetRepairListByAccount(QueryList query)
         {
             string SQL = @"
+                with tmp as (
+                    select a.*,b.tek_m_status,
+                    (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_name and tek_m_status = '5') as has5,
+                    row_number() over (partition by tek_name,tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where tek_m_status <> '5'
+                )
+
                 select top (@PageSize) * 
                 from (
-                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from Repair_Staging where tek_m_user = @account
+                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from tmp where tek_m_user = @account and con = 1 and has5 = 0
                 ) a
                 where rownumber > @PageSize * (@Page - 1)
             ";
@@ -339,7 +351,12 @@ namespace CRMAPI.Core.Repository
         public tek_repair GetRepairById(string tek_name)
         {
             string SQL = @"
-                select top 1 * from Repair_Staging where tek_name = @tek_name
+                with tmp as (
+                    select a.*,b.tek_m_status,
+                    (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_name and tek_m_status = '5') as has5,
+                    row_number() over (partition by tek_name,tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where tek_m_status <> '5'
+                )
+                select top 1 * from tmp where tek_name = @tek_name and con = 1 and has5 = 0
             ";
             var parameters = new SqlParameter[]
             {
