@@ -32,7 +32,7 @@ namespace CRMAPI.Core.Repository
                 with tmp as (
                     select a.*,b.tek_m_status,
                     (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_name and tek_m_status = '5') as has5,
-                    row_number() over (partition by tek_name,tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where tek_m_status <> '5'
+                    row_number() over (partition by tek_name,tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where isnull(tek_m_status,'') <> '5'
                 )
                 select top (@PageSize) * 
                 from (
@@ -99,7 +99,7 @@ namespace CRMAPI.Core.Repository
                 with tmp as (
                     select a.*,b.tek_m_status,
                     (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_name and tek_m_status = '5') as has5,
-                    row_number() over (partition by tek_name,tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where tek_m_status <> '5'
+                    row_number() over (partition by tek_name,tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where isnull(tek_m_status,'') <> '5'
                 )
 
                 select top (@PageSize) * 
@@ -354,7 +354,7 @@ namespace CRMAPI.Core.Repository
                 with tmp as (
                     select a.*,b.tek_m_status,
                     (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_name and tek_m_status = '5') as has5,
-                    row_number() over (partition by tek_name,tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where tek_m_status <> '5'
+                    row_number() over (partition by tek_name,tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where isnull(tek_m_status,'') <> '5'
                 )
                 select top 1 * from tmp where tek_name = @tek_name and con = 1 and has5 = 0
             ";
