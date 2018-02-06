@@ -113,5 +113,15 @@ namespace CRMAPI.Core.Entity
         /// </summary>
         public string tek_remark { get; set; }
 
+        /// <summary>
+        /// tek_note
+        /// </summary>
+        public string tek_note { get; set; }
+
+        /// <summary>
+        /// tek_errordescip
+        /// </summary>
+        public string tek_errordescip { get; set; }
+
     }
 }
