@@ -299,7 +299,7 @@ namespace CRMAPI.Core.Repository
         public List<tek_onsitenote> GetOnSiteNoteList(string tek_repair_no)
         {
             string SQL = @"
-                select * from Onsitenote_Staging where tek_repair_no = @id
+                select * from Onsitenote_Staging where tek_repair_no = @id order by id desc
             ";
             var parameters = new SqlParameter[]
             {
@@ -325,7 +325,7 @@ namespace CRMAPI.Core.Repository
         public List<tek_onsitenote> GetOnSiteNoteByUser(string user)
         {
             string SQL = @"
-                select * from Onsitenote_Staging where tek_m_user = @id
+                select * from Onsitenote_Staging where tek_m_user = @id order by id desc
             ";
             var parameters = new SqlParameter[]
             {
