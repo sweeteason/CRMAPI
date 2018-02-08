@@ -30,13 +30,16 @@ namespace CRMAPI.Core.Repository
             //狀態5的不傳
             string SQL = @"
                 with tmp as (
-                    select a.*,b.tek_m_status,
-                    (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_name and tek_m_status = '5') as has5,
-                    row_number() over (partition by tek_name,tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where isnull(tek_m_status,'') <> '5'
+	                select * from (
+		                select row_number() over (partition by tek_name,mstatus order by tek_recipient_date desc) as con,* from (
+			                select (select top 1 tek_m_status from Mobiletime_Staging where tek_repair_tek_mobiletime = a.tek_name order by id desc) as mstatus,b.tek_m_status,a.* 
+			                from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime
+		                ) as x where isnull(mstatus,'') <> '5'
+	                ) as y where con = 1
                 )
                 select top (@PageSize) * 
                 from (
-                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from tmp where con = 1 and has5 = 0 
+                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from tmp  
                 ) a
                 where rownumber > @PageSize * (@Page - 1)
             ";
@@ -71,7 +74,35 @@ namespace CRMAPI.Core.Repository
                 ) a
                 where rownumber > @PageSize * (@Page - 1)
             ";
-
+            //看最後一筆，排除 5
+            SQL = @"
+                with tmp as (
+	                select * from (
+		                select row_number() over (partition by tek_repair_no,mstatus order by createdon desc) as con,* from (
+			                select (select top 1 tek_m_status from Mobiletime_Staging where tek_repair_tek_mobiletime = a.tek_repair_no order by id desc) as mstatus,b.tek_m_status,a.* 
+			                from Onsitenote_Staging a left outer join Mobiletime_Staging b on a.tek_repair_no = tek_repair_tek_mobiletime
+		                ) as x where isnull(mstatus,'') <> '5'
+	                ) as y where con = 1
+                )
+                select top (@PageSize) * 
+                from (
+                    select *,row_number() over (order by createdon desc) as rownumber from tmp  
+                ) a
+                where rownumber > @PageSize * (@Page - 1)
+            ";
+            //只要有 5 就排除
+            SQL = @"
+               with tmp as (
+                    select a.*,b.tek_m_status,
+                    (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_repair_no and tek_m_status = '5') as has5,
+                    row_number() over (partition by tek_repair_no,tek_m_status order by createdon desc) as con from Onsitenote_Staging a left outer join Mobiletime_Staging b on a.tek_repair_no = tek_repair_tek_mobiletime where isnull(tek_m_status,'') <> '5'
+                )
+                select top (@PageSize) * 
+                from (
+                    select *,row_number() over (order by createdon desc) as rownumber from tmp where con = 1 and has5 = 0 
+                ) a
+                where rownumber > @PageSize * (@Page - 1)
+            ";
             var parameters = new SqlParameter[]
             {
                  new SqlParameter("PageSize", query.PageSize),
@@ -97,16 +128,19 @@ namespace CRMAPI.Core.Repository
         {
             string SQL = @"
                 with tmp as (
-                    select a.*,b.tek_m_status,
-                    (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_name and tek_m_status = '5') as has5,
-                    row_number() over (partition by tek_name,tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where isnull(tek_m_status,'') <> '5'
+	                select * from (
+		                select row_number() over (partition by tek_name,mstatus order by tek_recipient_date desc) as con,* from (
+			                select (select top 1 tek_m_status from Mobiletime_Staging where tek_repair_tek_mobiletime = a.tek_name order by id desc) as mstatus,b.tek_m_status,a.* 
+			                from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime
+		                ) as x where isnull(mstatus,'') <> '5'
+	                ) as y where con = 1
                 )
-
                 select top (@PageSize) * 
                 from (
-                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from tmp where tek_m_user = @account and con = 1 and has5 = 0
+                    select *,row_number() over (order by tek_recipient_date desc) as rownumber from tmp where tek_m_user = @account
                 ) a
                 where rownumber > @PageSize * (@Page - 1)
+
             ";
 
             var parameters = new SqlParameter[]
@@ -274,7 +308,15 @@ namespace CRMAPI.Core.Repository
         public tek_onsitenote GetOnSiteNote(string tek_repair_no)
         {
             string SQL = @"
-                select top 1 * from Onsitenote_Staging where tek_repair_no = @id
+                with tmp as (
+	                select * from (
+		                select row_number() over (partition by tek_repair_no,mstatus order by createdon desc) as con,* from (
+			                select (select top 1 tek_m_status from Mobiletime_Staging where tek_repair_tek_mobiletime = a.tek_repair_no order by id desc) as mstatus,b.tek_m_status,a.* 
+			                from Onsitenote_Staging a left outer join Mobiletime_Staging b on a.tek_repair_no = tek_repair_tek_mobiletime
+		                ) as x where isnull(mstatus,'') <> '5'
+	                ) as y where con = 1
+                )
+                select top 1 * from tmp where tek_repair_no = @id 
             ";
             var parameters = new SqlParameter[]
             {
@@ -300,6 +342,27 @@ namespace CRMAPI.Core.Repository
         {
             string SQL = @"
                 select * from Onsitenote_Staging where tek_repair_no = @id order by id desc
+            ";
+            //排除狀態 5
+            SQL = @"
+                with tmp as (
+	                select * from (
+		                select row_number() over (partition by tek_repair_no,mstatus order by createdon desc) as con,* from (
+			                select (select top 1 tek_m_status from Mobiletime_Staging where tek_repair_tek_mobiletime = a.tek_repair_no order by id desc) as mstatus,b.tek_m_status,a.* 
+			                from Onsitenote_Staging a left outer join Mobiletime_Staging b on a.tek_repair_no = tek_repair_tek_mobiletime
+		                ) as x where isnull(mstatus,'') <> '5'
+	                ) as y where con = 1
+                )
+                select * from tmp where tek_repair_no = @id order by id desc            
+            ";
+            //只要有狀態5就排除
+            SQL = @"
+               with tmp as (
+                    select a.*,b.tek_m_status,
+                    (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_repair_no and tek_m_status = '5') as has5,
+                    row_number() over (partition by tek_repair_no,tek_m_status order by createdon desc) as con from Onsitenote_Staging a left outer join Mobiletime_Staging b on a.tek_repair_no = tek_repair_tek_mobiletime where isnull(tek_m_status,'') <> '5'
+                )
+                select * from tmp where con = 1 and has5 = 0 and tek_repair_no = @id order by id desc   
             ";
             var parameters = new SqlParameter[]
             {
@@ -327,6 +390,25 @@ namespace CRMAPI.Core.Repository
             string SQL = @"
                 select * from Onsitenote_Staging where tek_m_user = @id order by id desc
             ";
+            SQL = @"
+                with tmp as (
+	                select * from (
+		                select row_number() over (partition by tek_repair_no,mstatus order by createdon desc) as con,* from (
+			                select (select top 1 tek_m_status from Mobiletime_Staging where tek_repair_tek_mobiletime = a.tek_repair_no order by id desc) as mstatus,b.tek_m_status,a.* 
+			                from Onsitenote_Staging a left outer join Mobiletime_Staging b on a.tek_repair_no = tek_repair_tek_mobiletime
+		                ) as x where isnull(mstatus,'') <> '5'
+	                ) as y where con = 1
+                )
+                select * from tmp where tek_m_user = @id order by id desc
+            ";
+            SQL = @"
+               with tmp as (
+                    select a.*,b.tek_m_status,
+                    (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_repair_no and tek_m_status = '5') as has5,
+                    row_number() over (partition by tek_repair_no,tek_m_status order by createdon desc) as con from Onsitenote_Staging a left outer join Mobiletime_Staging b on a.tek_repair_no = tek_repair_tek_mobiletime where isnull(tek_m_status,'') <> '5'
+                )
+                select * from tmp where con = 1 and has5 = 0 and tek_repair_no = @id and tek_m_user = @id order by id desc 
+            ";
             var parameters = new SqlParameter[]
             {
                  new SqlParameter("id", user),
@@ -350,13 +432,24 @@ namespace CRMAPI.Core.Repository
         /// <returns></returns>
         public tek_repair GetRepairById(string tek_name)
         {
+            //with tmp as (
+            //    select a.*,b.tek_m_status,
+            //        (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_name and tek_m_status = '5') as has5,
+            //        row_number() over(partition by tek_name, tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where isnull(tek_m_status,'') <> '5'
+            //    )
+            //    select top 1 * from tmp where tek_name = @tek_name and con = 1 and has5 = 0
+
             string SQL = @"
+
                 with tmp as (
-                    select a.*,b.tek_m_status,
-                    (select count(*) from Mobiletime_Staging c where c.tek_repair_tek_mobiletime = a.tek_name and tek_m_status = '5') as has5,
-                    row_number() over (partition by tek_name,tek_m_status order by tek_recipient_date desc) as con from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime where isnull(tek_m_status,'') <> '5'
+	                select * from (
+		                select row_number() over (partition by tek_name,mstatus order by tek_recipient_date desc) as con,* from (
+			                select (select top 1 tek_m_status from Mobiletime_Staging where tek_repair_tek_mobiletime = a.tek_name order by id desc) as mstatus,b.tek_m_status,a.* 
+			                from Repair_Staging a left outer join Mobiletime_Staging b on a.tek_name = tek_repair_tek_mobiletime
+		                ) as x where isnull(mstatus,'') <> '5'
+	                ) as y where con = 1
                 )
-                select top 1 * from tmp where tek_name = @tek_name and con = 1 and has5 = 0
+                select top 1 * from tmp where tek_name = @tek_name
             ";
             var parameters = new SqlParameter[]
             {
